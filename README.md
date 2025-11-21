@@ -5,6 +5,11 @@
 
 A fun web application that adds a cool laser eye effect to your photos or webcam feed! 
 
+## 🚀 Demo
+
+[Online Demo](https://winterx.github.io/lazer-eyes-simulator)
+
+
 <div align="center">
   <img src="./assets/demo.png" alt="Demo">
 </div>
