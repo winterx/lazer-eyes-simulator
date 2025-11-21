@@ -13,10 +13,43 @@ body {
 .container {
     position: relative;
     width: 100%;
+    max-width: 177.78vh; /* 16/9 = 1.7778. Limits width so height doesn't overflow viewport */
+    height: 56.25vw; /* 9/16 = 0.5625. Sets height based on width */
+    max-height: 100vh;
+    
+    /* Ensure it doesn't exceed viewport dimensions while keeping aspect ratio */
+    aspect-ratio: 16 / 9;
+    
+    /* If aspect-ratio is supported, height/width calculations above are fallbacks or constraints */
+    /* We want it to be as big as possible within the viewport */
+    width: auto;
+    height: auto;
+    
+    /* Logic to fit in viewport: */
+    /* If screen is wider than 16:9, height = 100vh, width = 100vh * 16/9 */
+    /* If screen is taller than 16:9, width = 100vw, height = 100vw * 9/16 */
+    
+    /* Let's use a cleaner approach with aspect-ratio */
+    width: 100%;
     height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    
+    /* This alone doesn't force 16:9. We need the container to BE 16:9 */
+}
+
+/* Better approach for fixed aspect ratio container centered in viewport */
+.container {
+    position: relative;
+    width: 100vw;
+    height: 56.25vw; /* 100 * 9/16 */
+    max-height: 100vh;
+    max-width: 177.78vh; /* 100 * 16/9 */
+    
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #000;
 }
 
 .input_video {

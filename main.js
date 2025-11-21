@@ -39,7 +39,12 @@ let lasers = []; // Array to hold the two laser meshes
 function initThreeJS() {
     scene = new THREE.Scene();
     
-    const aspect = window.innerWidth / window.innerHeight;
+    // Get container dimensions
+    const container = document.querySelector('.container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    const aspect = width / height;
     camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
     camera.position.z = 5;
 
@@ -48,7 +53,7 @@ function initThreeJS() {
         alpha: true,
         antialias: true
     });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     // Important for post-processing with transparency
     renderer.setClearColor(0x000000, 1); // Opaque black, but background will cover it
@@ -58,7 +63,7 @@ function initThreeJS() {
     
     // Resolution, strength, radius, threshold
     const bloomPass = new UnrealBloomPass(
-        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        new THREE.Vector2(width, height),
         1.5, 0.4, 0.85
     );
     bloomPass.strength = 1.8; 
@@ -73,8 +78,8 @@ function initThreeJS() {
     composer.addPass(outputPass);
 
     // Resize debug canvas
-    debugCanvas.width = window.innerWidth;
-    debugCanvas.height = window.innerHeight;
+    debugCanvas.width = width;
+    debugCanvas.height = height;
 
     // Video Background
     const videoTexture = new THREE.VideoTexture(videoElement);
@@ -131,12 +136,16 @@ function initThreeJS() {
 }
 
 function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const container = document.querySelector('.container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    composer.setSize(window.innerWidth, window.innerHeight);
-    debugCanvas.width = window.innerWidth;
-    debugCanvas.height = window.innerHeight;
+    renderer.setSize(width, height);
+    composer.setSize(width, height);
+    debugCanvas.width = width;
+    debugCanvas.height = height;
 }
 
 function animate() {
