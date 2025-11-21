@@ -89,21 +89,75 @@ body {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
     z-index: 10;
 }
 
 button {
-    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
     margin: 0 5px;
-    font-size: 16px;
+    font-size: 14px;
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    border: 1px solid white;
-    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px; /* Pill shape */
     cursor: pointer;
     transition: background-color 0.3s;
+    font-family: 'Inter', sans-serif;
 }
 
 button:hover {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.shortcut {
+    font-size: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+    opacity: 0.8;
+}
+
+.header {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 20; /* Above canvas and debug controls */
+    pointer-events: none; /* Let clicks pass through */
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Optional: make it circular */
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+h1.title {
+    font-family: 'Inter', sans-serif; /* Assuming system font or imported */
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8); /* Red glow for theme */
+    margin: 0;
 }

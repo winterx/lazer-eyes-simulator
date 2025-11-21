@@ -23,13 +23,25 @@
 </head>
 <body>
     <div class="container">
+        <div class="header">
+            <img src="logo.jpg" alt="Logo" class="logo">
+            <h1 class="title">Lazer Eyes Simulator</h1>
+        </div>
         <video class="input_video" playsinline></video>
         <canvas class="output_canvas"></canvas>
         <canvas class="debug_canvas"></canvas>
     </div>
     <div class="controls">
-        <button id="debugBtn">Show Landmarks</button>
-        <button id="laserBtn">Toggle Lasers</button>
+        <button id="laserBtn" title="Toggle Lasers (L)">
+            <img src="icons/ui-toggle-lazereyes.png" alt="Lasers" class="icon">
+            <span>Lasers</span>
+            <span class="shortcut">L</span>
+        </button>
+        <button id="captureBtn" title="Capture Image (C)">
+            <img src="icons/ui-capture-image.png" alt="Capture" class="icon">
+            <span>Capture</span>
+            <span class="shortcut">C</span>
+        </button>
     </div>
     <script type="module" src="main.js"></script>
 </body>

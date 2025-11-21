@@ -11,26 +11,82 @@ const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
 const debugCanvas = document.getElementsByClassName('debug_canvas')[0];
 const debugCtx = debugCanvas.getContext('2d');
-const debugBtn = document.getElementById('debugBtn');
+// const debugBtn = document.getElementById('debugBtn'); // Removed
 const laserBtn = document.getElementById('laserBtn');
+const captureBtn = document.getElementById('captureBtn');
 
 let isDebugMode = false;
 let isLaserMode = true; // Default to on
 
-debugBtn.addEventListener('click', () => {
+// Settings object for GUI
+const settings = {
+    showLandmarks: false
+};
+
+let landmarksController; // To update display when shortcut is used
+
+function toggleDebug() {
     isDebugMode = !isDebugMode;
-    debugBtn.textContent = isDebugMode ? "Hide Landmarks" : "Show Landmarks";
+    settings.showLandmarks = isDebugMode;
+    if (landmarksController) landmarksController.updateDisplay();
+    
     if (!isDebugMode) {
         debugCtx.clearRect(0, 0, debugCanvas.width, debugCanvas.height);
     }
-});
+}
 
-laserBtn.addEventListener('click', () => {
+function toggleLaser() {
     isLaserMode = !isLaserMode;
-    laserBtn.textContent = isLaserMode ? "Disable Lasers" : "Enable Lasers";
-    // Update visibility immediately
+    laserBtn.style.backgroundColor = isLaserMode ? "rgba(255, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.7)";
+    
     if (!isLaserMode) {
         lasers.forEach(l => l.visible = false);
+    }
+}
+
+function captureImage() {
+    // We need to render one frame to ensure everything is up to date on the canvas
+    // But `composer.render()` is called in the loop.
+    // To capture, we can just take the canvas data.
+    // However, `preserveDrawingBuffer` might be needed if the canvas is cleared automatically.
+    // Let's try simply toDataURL first.
+    
+    // Note: The video background is a texture in WebGL, so it should be captured if we render the scene.
+    // But we are using `scene.background = videoTexture`.
+    
+    // Force a render to make sure the buffer is populated for capture (if not in loop)
+    if (isLaserMode) {
+        composer.render();
+    } else {
+        renderer.render(scene, camera);
+    }
+    
+    const dataURL = canvasElement.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = 'Lazer eyes.png';
+    link.href = dataURL;
+    link.click();
+}
+
+// debugBtn.addEventListener('click', toggleDebug); // Removed
+laserBtn.addEventListener('click', toggleLaser);
+captureBtn.addEventListener('click', captureImage);
+
+// Keyboard Shortcuts
+window.addEventListener('keydown', (event) => {
+    // Ignore if typing in an input (though we don't have any)
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+
+    switch(event.key.toLowerCase()) {
+        case 'f':
+            toggleDebug();
+            break;
+        case 'l':
+            toggleLaser();
+            break;
+        case 'c':
+            captureImage();
+            break;
     }
 });
 
@@ -53,7 +109,8 @@ function initThreeJS() {
     renderer = new THREE.WebGLRenderer({
         canvas: canvasElement,
         alpha: true,
-        antialias: true
+        antialias: true,
+        preserveDrawingBuffer: true // Required for toDataURL to work reliably
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -74,6 +131,17 @@ function initThreeJS() {
 
     // Debug GUI
     const gui = new GUI();
+    
+    // General Settings
+    const generalFolder = gui.addFolder('General');
+    landmarksController = generalFolder.add(settings, 'showLandmarks').name('Show Landmarks').onChange((value) => {
+        isDebugMode = value;
+        if (!isDebugMode) {
+            debugCtx.clearRect(0, 0, debugCanvas.width, debugCanvas.height);
+        }
+    });
+    generalFolder.open();
+
     const bloomFolder = gui.addFolder('Bloom Settings');
     bloomFolder.add(bloomPass, 'strength', 0, 5).name('Strength');
     bloomFolder.add(bloomPass, 'radius', 0, 1).name('Radius');
